@@ -122,6 +122,32 @@
     <div class="lightbox" id="img51"><a href="#_" class="lightbox-close"></a><div class="lightbox-content"><img src="images/inez-website-51.jpg"><div class="caption"><p>TRIPHON, publication design for Sydney Burgstra, 2025</p></div></div></div>
     <div class="lightbox" id="img52"><a href="#_" class="lightbox-close"></a><div class="lightbox-content"><img src="images/inez-website-52.jpg"><div class="caption"><p>Misc, 2023</p></div></div></div>
 
-        
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Loop through each lightbox
+  document.querySelectorAll(".lightbox").forEach(function(lightbox) {
+    // Find the main image inside the lightbox
+    const lightboxImg = lightbox.querySelector(".lightbox-content img");
+    
+    // Find the caption text inside the same lightbox
+    const caption = lightbox.querySelector(".caption p");
+
+    if (lightboxImg && caption) {
+      // Use the caption text as the alt text
+      const altText = caption.innerText.trim();
+      lightboxImg.setAttribute("alt", altText);
+
+      // Match the alt text to the thumbnail
+      const lightboxId = lightbox.getAttribute("id");
+      const thumbnailLink = document.querySelector(`a[href="#${lightboxId}"] img`);
+
+      if (thumbnailLink) {
+        thumbnailLink.setAttribute("alt", altText);
+      }
+    }
+  });
+});
+</script>
+
 </body>
 </html>
