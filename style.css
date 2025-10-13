@@ -1,0 +1,183 @@
+/* Basic reset and body styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #ffffff; /* A light gray background */
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 40px; /* Increased padding for bigger margins */
+}
+
+/* Header styles */
+.page-header {
+    min-height: 40vh; /* Makes the row large (25% of viewport height) */
+    display: flex;
+    align-items: flex-start; /* Aligns title to the top of the header area */
+}
+
+.page-header h1 {
+    font-size: 0.75rem; /* A small, clean font size */
+    font-weight: 500; /* A normal, non-bold weight for a sans-serif look */
+    letter-spacing: 1px; /* Adds space between the letters */
+    color: #000; /* Ensure the text is black */
+}
+
+/* Remove underline from header link */
+.page-header a {
+    text-decoration: none;
+}
+
+/* The main container for the gallery */
+.gallery-container {
+    display: grid;
+    /* Create 3 columns with the specified 35%/35%/30% ratio */
+    grid-template-columns: 1fr 1fr 1fr;
+    /* Automatically create rows that are 400px tall */
+    grid-auto-rows: 600px;
+    gap: 50px; /* Space between the columns */
+}
+
+/* The links in the gallery should fill the cell */
+.gallery-container a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}
+
+/* On project pages, images are direct children */
+.gallery-container > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+/* Styling for the images */
+.gallery-container img {
+    /* Allow images to display at their natural size, but not exceed the container */
+    max-width: 80%; /* Making images a bit smaller within their cell */
+    max-height: 80%; /* Making images a bit smaller within their cell */
+    /* Center the image within the grid cell if it's smaller than the cell */
+    margin: auto;
+    display: block; /* Remove bottom space under images */
+}
+
+
+/* Lightbox styles */
+.lightbox {
+    /* Hide the lightbox by default */
+    display: none;
+    position: fixed; /* Use 'fixed' to position relative to the viewport */
+    z-index: 999;
+    top: 0;
+    left: 0;
+    width: 100%; /* Cover the full width of the screen */
+    height: 100%; /* Cover the full height of the screen */
+    background-color: rgba(255, 255, 255, 0.1); /* A slightly more opaque white background */
+    /* Flexbox properties will be used for centering when :target is active */
+}
+
+.lightbox:target {
+    /* Show the lightbox when it is targeted */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Sits behind the image */
+    cursor: default;
+}
+
+.lightbox-content {
+    position: relative;
+    z-index: 2;
+    background-color: #FFFF00; /* Bright yellow */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    max-width: 90vw;
+}
+
+.lightbox img {
+    /* Image will be contained within the yellow box */
+    max-height: 75vh; /* Slightly smaller to ensure caption fits */
+    max-width: 100%;
+    object-fit: contain;
+    cursor: default; /* Ensure cursor doesn't change over the image */
+}
+
+/* Caption styles */
+.caption {
+    margin-top: 15px; /* Space between image and caption */
+    max-width: 60ch; /* Keep text readable */
+    text-align: left;
+}
+
+.caption p {
+    background-color: transparent; /* Remove individual background */
+    padding: 0; /* Remove individual padding */
+    /* Inherit styles from .text-container p */
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #000;
+}
+
+/* Container for text on project and about pages */
+.text-container {
+    width: 35%; /* Set width to 35% of the page */
+}
+
+.text-container p {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    margin-bottom: 1.2em; /* Space between paragraphs */
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #333;
+}
+
+/* Project page header */
+.project-header {
+    padding-bottom: 50px; /* Space between header and gallery */
+}
+
+.project-header h2 {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    margin-bottom: 1.2em;
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    .gallery-container {
+        /* On tablets, switch to two equal-width columns */
+        grid-template-columns: 1fr;
+    }
+}
+
+/* For mobile phones: switch to a single column */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    .gallery-container {
+        gap: 10px;
+    }
+    .gallery-container {
+        /* On mobile, switch to a single column */
+        grid-template-columns: 1fr;
+    }
+}
