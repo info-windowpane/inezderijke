@@ -1,0 +1,373 @@
+/* Basic reset and body styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #ffffff; /* A light gray background */
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 40px; /* Increased padding for bigger margins */
+}
+
+/* Header styles */
+.page-header {
+    min-height: 40vh; /* Makes the row large (25% of viewport height) */
+    display: flex;
+    align-items: flex-start; /* Aligns title to the top of the header area */
+    justify-content: space-between; /* Pushes items to opposite ends */
+}
+
+.page-header h1 {
+    font-size: 0.75rem; /* A small, clean font size */
+    font-weight: 500; /* A normal, non-bold weight for a sans-serif look */
+    letter-spacing: 1px; /* Adds space between the letters */
+}
+
+/* Remove underline from header link */
+.page-header a {
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: #000;
+}
+
+/* The main container for the gallery */
+.gallery-container {
+    display: grid;
+    /* Create 3 columns with the specified 35%/35%/30% ratio */
+    grid-template-columns: 1fr 1fr 1fr;
+    /* Automatically create rows that are 400px tall */
+    grid-auto-rows: 600px;
+    gap: 20px; /* Space between the columns and rows */
+}
+
+/* The links in the gallery should fill the cell */
+.gallery-container a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}
+
+/* On project pages, images are direct children */
+.gallery-container > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+/* Styling for the images */
+.gallery-container img {
+    /* Allow images to display at their natural size, but not exceed the container */
+    max-width: 80%; /* Making images a bit smaller within their cell */
+    max-height: 80%; /* Making images a bit smaller within their cell */
+    /* Center the image within the grid cell if it's smaller than the cell */
+    margin: auto;
+    display: block; /* Remove bottom space under images */
+}
+
+
+/* Homepage: 4 columns with slightly tighter spacing */
+.home-gallery {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.home-gallery img {
+    max-width: 85%;
+    max-height: 85%;
+}
+
+/* Homepage: rows of 1-10 images, 3 images fill the screen width */
+.home {
+    --gap: 20px;
+    /* 3.6 cells fit across the screen, so the part image at the edge invites scrolling */
+    --cell: calc((100vw - 40px - 3 * var(--gap)) / 3.6);
+}
+
+/* Title and Information stay fixed on top; images scroll behind them */
+.home .page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    min-height: 0;
+    padding: 40px;
+    z-index: 100;
+    pointer-events: none; /* Clicks pass through to images behind the empty header area */
+}
+
+.home .page-header a {
+    pointer-events: auto;
+}
+
+.rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    padding-top: 40vh; /* Same opening space as the old header */
+}
+
+/* Project name (and caption) above each row, same style as the site title */
+.project-info {
+    margin-top: calc(var(--gap) * 2);
+    margin-bottom: calc(var(--gap) * -1 + 8px); /* Sit close to its own row */
+}
+
+.project-info:first-child {
+    margin-top: 0;
+}
+
+.project-title {
+    width: max-content;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.has-caption .project-title {
+    cursor: pointer;
+}
+
+.project-caption {
+    display: none;
+    margin-top: 8px;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #333;
+}
+
+.project-info.is-open .project-caption {
+    display: block;
+}
+
+.project-caption a {
+    color: inherit;
+}
+
+/* Each row scrolls left/right on its own; the page only scrolls down */
+.row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    overflow-x: auto;
+    overscroll-behavior-x: contain; /* Stops a sideways swipe triggering browser back */
+    scrollbar-width: none; /* No visible scrollbar */
+    /* Run edge to edge so images slide off the sides of the screen */
+    margin: 0 -40px;
+    padding: 0 40px;
+}
+
+.row::-webkit-scrollbar {
+    display: none;
+}
+
+/* Every image cell is the same width; a row is as tall as its tallest image,
+   so rows of wide images are short strips */
+.row > a,
+.row > .link-cell {
+    flex: 0 0 var(--cell);
+    width: var(--cell);
+    padding: calc(var(--cell) * 0.1); /* Same white space around every image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}
+
+/* A web link in place of an image: thin box, caption-style text, underlined */
+.link-box {
+    width: 100%; /* As wide as an image cell */
+    aspect-ratio: 5 / 3; /* Landscape box */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 0.5px solid #333;
+    padding: 10px;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #333;
+    text-decoration: underline;
+    overflow-wrap: anywhere; /* Long URLs wrap inside the box */
+    cursor: pointer;
+}
+
+.row img {
+    /* --size shrinks one image (set from projects.js with size:); the cell stays the same width */
+    max-width: calc(100% * var(--size, 1));
+    max-height: calc(var(--cell) * 0.9 * var(--size, 1)); /* Tall portrait images stop here */
+    display: block;
+}
+
+/* Lightbox styles */
+/* The Modal (background) */
+.lightbox {
+    visibility: hidden; /* Hidden by default */
+    opacity: 0;
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: transparent; /* Make background fully transparent */
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5vh; /* Add space at the top */
+    padding-bottom: 5vh; /* Add space at the bottom */
+}
+
+.lightbox:target,
+.lightbox.is-open {
+    visibility: visible;
+    opacity: 1;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    cursor: default;
+    z-index: 1001;
+}
+
+/* New 'x' close button */
+.lightbox-x-close {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: #333;
+    text-decoration: none;
+    font-size: 1.5rem; /* Reduced size */
+    font-weight: normal; /* Make it regular weight */
+    z-index: 1003; /* Make sure it's on top of everything */
+    line-height: 1;
+    cursor: pointer;
+}
+
+.lightbox-content {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    max-width: 1400px; /* Increased max-width for larger lightbox */
+    margin: auto;
+    background-color: #FFFF00; /* Bright yellow background */
+    padding: 20px;
+    z-index: 1002; /* Ensure it's above the close button overlay */
+}
+
+.lightbox-content img {
+    margin-left: 20px; /* Add space between text and image */
+    width: 60%; /* Image takes up 60% of the container */
+    object-fit: contain; /* Ensure image fits without being cropped */
+    /* Set max-height to fill the viewport minus top/bottom padding and internal padding */
+    max-height: calc(90vh - 40px); 
+}
+
+/* Homepage lightbox: just the image, large, on the yellow */
+.home .lightbox-content {
+    width: auto;
+    max-width: 90vw;
+}
+
+.home .lightbox-content img {
+    margin-left: 0;
+    width: auto;
+    max-width: calc(90vw - 40px);
+    max-height: calc(90vh - 40px);
+}
+
+/* New text container for the lightbox */
+.lightbox-text {
+    width: 40%; /* Text takes up 40% of the container */
+    overflow-y: auto; /* Allow scrolling for long text, if needed */
+}
+
+.lightbox-text h3 {
+    margin-top: 0;
+    margin-bottom: 1.2em;
+    /* Match project header style */
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #333;
+}
+
+.lightbox-text p {
+    /* Match main text style */
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #333;
+}
+
+/* Container for text on project and about pages */
+.text-container {
+    width: 100%; /* Text runs across the whole page */
+}
+
+.text-container p {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    margin-bottom: 1.2em; /* Space between paragraphs */
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #333;
+}
+
+/* Project page header */
+.project-header {
+    padding-bottom: 50px; /* Space between header and gallery */
+}
+
+.project-header h2 {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    margin-bottom: 1.2em;
+    font-weight: 500;
+    letter-spacing: 0.75px;
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    .gallery-container {
+        /* On tablets, switch to two equal-width columns */
+        grid-template-columns: 1fr;
+    }
+
+    .home-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    /* Switch lightbox to a vertical layout on mobile */
+    .lightbox-content {
+        flex-direction: column;
+        /* Allow vertical scrolling for long content on small screens */
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .lightbox-text {
+        width: 100%; /* Take full width */
+        margin-bottom: 20px; /* Add space between text and image */
+    }
+
+    .lightbox-content img {
+        width: 100%; /* Take full width */
+        margin-left: 0; /* Remove the horizontal margin */
+    }
+}

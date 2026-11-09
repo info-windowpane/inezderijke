@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inez de Rijke</title>
+    <meta name="description" content="Portfolio website of Inez de Rijke, a graphic designer and photographer, currently studying at Werkplaats Typografie.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="home">
+
+    <header class="page-header">
+        <a href="index.html"><h1>Inez de Rijke</h1></a>
+        <a href="about.html">Information</a>
+    </header>
+
+    <!-- Rows are built from projects.js; edit that file to add or change work -->
+    <div class="rows" id="rows"></div>
+
+    <!-- One shared lightbox, filled with whichever image is clicked -->
+    <div class="lightbox" id="lightbox">
+        <a href="#" class="lightbox-close"></a>
+        <a href="#" class="lightbox-x-close">&times;</a>
+        <div class="lightbox-content">
+            <img src="" alt="">
+        </div>
+    </div>
+
+    <script src="projects.js"></script>
+    <script>
+    const rows = document.getElementById("rows");
+    const lightbox = document.getElementById("lightbox");
+
+    // Typed line breaks are ignored; only <br> written in the text makes a break
+    function formatText(text) {
+        return text.trim() ? "<p>" + text.trim().replace(/\s*\n\s*/g, " ") + "</p>" : "";
+    }
+
+    function openLightbox(project, src) {
+        lightbox.querySelector("img").src = src;
+        lightbox.querySelector("img").alt = project.title;
+        lightbox.classList.add("is-open");
+    }
+
+    function closeLightbox(event) {
+        if (event) event.preventDefault();
+        lightbox.classList.remove("is-open");
+    }
+
+    projects.filter(project => !project.hidden).forEach(project => {
+        // Title, with the caption opening underneath when the title is clicked
+        const info = document.createElement("div");
+        info.className = "project-info";
+        const title = document.createElement("h2");
+        title.className = "project-title";
+        title.textContent = project.title;
+        info.appendChild(title);
+        if (project.text.trim()) {
+            const caption = document.createElement("div");
+            caption.className = "project-caption";
+            caption.innerHTML = formatText(project.text);
+            caption.querySelectorAll("a").forEach(a => a.target = "_blank");
+            info.appendChild(caption);
+            info.classList.add("has-caption");
+            title.addEventListener("click", () => info.classList.toggle("is-open"));
+        }
+        rows.appendChild(info);
+
+        const row = document.createElement("div");
+        row.className = "row";
+        project.images.forEach(file => {
+            // A { link, text } entry becomes a thin box around a plain web link
+            if (typeof file === "object" && file.link) {
+                const cell = document.createElement("div");
+                cell.className = "link-cell";
+                const a = document.createElement("a");
+                a.className = "link-box";
+                a.href = file.link;
+                a.target = "_blank";
+                a.textContent = file.text || file.link;
+                cell.appendChild(a);
+                row.appendChild(cell);
+                return;
+            }
+            // A { src, size } entry is an image shown at size % of normal (e.g. size: 60)
+            const name = typeof file === "object" ? file.src : file;
+            const src = "images/" + name;
+            const link = document.createElement("a");
+            link.href = "#";
+            link.innerHTML = `<img src="${src}" alt="${project.title}" loading="lazy">`;
+            if (typeof file === "object" && file.size) {
+                link.querySelector("img").style.setProperty("--size", file.size / 100);
+            }
+            // enlarge: false on the project (or on one { src } image) turns off the lightbox
+            const enlarge = project.enlarge !== false && !(typeof file === "object" && file.enlarge === false);
+            if (enlarge) {
+                link.addEventListener("click", event => {
+                    event.preventDefault();
+                    openLightbox(project, src);
+                });
+            } else {
+                link.removeAttribute("href"); // Not clickable, normal cursor
+            }
+            row.appendChild(link);
+        });
+        rows.appendChild(row);
+    });
+
+    lightbox.querySelectorAll(".lightbox-close, .lightbox-x-close").forEach(el => el.addEventListener("click", closeLightbox));
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeLightbox(); });
+    </script>
+
+</body>
+</html>
